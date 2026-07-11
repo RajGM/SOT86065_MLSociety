@@ -1,0 +1,24 @@
+{
+  "name": "mls_cleaned",
+  "version": "1.0.0",
+  "description": "This project investigates **colorism bias in AI image generators** by systematically varying socioeconomic and demographic cues in text-to-image prompts and measuring how those cues shift the skin tone of generated portraits. It uses the **Monk Skin Tone (MST) scale** (1–10, lightest to darkest) to quantify bias.",
+  "homepage": "https://github.com/RajGM/SOT86065_MLSociety#readme",
+  "bugs": {
+    "url": "https://github.com/RajGM/SOT86065_MLSociety/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RajGM/SOT86065_MLSociety.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "openai": "^6.46.0"
+  }
+}
