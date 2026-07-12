@@ -71,13 +71,13 @@ All generation and audit scripts are **resumable** — interrupted runs pick up 
 
 Every prompt is a hyperrealistic portrait request constructed from up to five cue dimensions:
 
-| Code | Cue | Values |
-|------|-----|--------|
-| **G** | Gender | man, woman (neutral = "person") |
-| **O** | Occupation | 30 occupations across 3 prestige bands (10 each) |
-| **I** | Income | high, low |
-| **S** | Setting | village, city |
-| **N** | Neighborhood | gated community, suburb, public housing project |
+| Code  | Cue          | Values                                           |
+| ----- | ------------ | ------------------------------------------------ |
+| **G** | Gender       | man, woman (neutral = "person")                  |
+| **O** | Occupation   | 30 occupations across 3 prestige bands (10 each) |
+| **I** | Income       | high, low                                        |
+| **S** | Setting      | village, city                                    |
+| **N** | Neighborhood | gated community, suburb, public housing project  |
 
 ### Occupation Prestige Bands
 
@@ -106,52 +106,52 @@ The prompt matrix is organized into six experimental sections:
 #### Section 1: L-track (Gendered, Incremental)
 Adds cues one at a time with explicit gender, testing how each additional cue shifts skin tone.
 
-| Layer | Cues | Count |
-|-------|------|-------|
-| L0 | none (baseline) | 1 |
-| L1 | G | 2 |
-| L2 | G+O | 60 |
-| L3 | G+O+I | 120 |
-| L4 | G+O+I+S | 240 |
-| L5 | G+O+I+S+N | 720 |
+| Layer | Cues            | Count |
+| ----- | --------------- | ----- |
+| L0    | none (baseline) | 1     |
+| L1    | G               | 2     |
+| L2    | G+O             | 60    |
+| L3    | G+O+I           | 120   |
+| L4    | G+O+I+S         | 240   |
+| L5    | G+O+I+S+N       | 720   |
 
 #### Section 2: N-track (Neutral, Incremental)
 Same incremental design but without explicit gender cue (uses "person" instead).
 
-| Layer | Cues | Count |
-|-------|------|-------|
-| N0 | (shared with L0) | — |
-| N2 | O | 30 |
-| N3 | O+I | 60 |
-| N4 | O+I+S | 120 |
-| N5 | O+I+S+N | 360 |
+| Layer | Cues             | Count |
+| ----- | ---------------- | ----- |
+| N0    | (shared with L0) | —     |
+| N2    | O                | 30    |
+| N3    | O+I              | 60    |
+| N4    | O+I+S            | 120   |
+| N5    | O+I+S+N          | 360   |
 
 #### Section 3: Single-Cue Isolations (S1–S5)
 Each cue tested alone against the baseline to measure its independent effect.
 
-| ID | Cue | Count |
-|----|-----|-------|
-| S1 | Gender only | 2 |
-| S2 | Occupation only | 30 |
-| S3 | Income only | 2 |
-| S4 | Setting only | 2 |
-| S5 | Neighborhood only | 3 |
+| ID  | Cue               | Count |
+| --- | ----------------- | ----- |
+| S1  | Gender only       | 2     |
+| S2  | Occupation only   | 30    |
+| S3  | Income only       | 2     |
+| S4  | Setting only      | 2     |
+| S5  | Neighborhood only | 3     |
 
 #### Section 4: Two-Cue Interactions (X1–X10)
 All 10 pairwise combinations of cues, testing whether two cues compound or cancel.
 
-| ID | Pair | Count |
-|----|------|-------|
-| X1 | G×I | 4 |
-| X2 | G×O | 60 |
-| X3 | G×S | 4 |
-| X4 | G×N | 6 |
-| X5 | O×I | 60 |
-| X6 | O×S | 60 |
-| X7 | O×N | 90 |
-| X8 | I×S | 4 |
-| X9 | I×N | 6 |
-| X10 | S×N | 6 |
+| ID  | Pair | Count |
+| --- | ---- | ----- |
+| X1  | G×I  | 4     |
+| X2  | G×O  | 60    |
+| X3  | G×S  | 4     |
+| X4  | G×N  | 6     |
+| X5  | O×I  | 60    |
+| X6  | O×S  | 60    |
+| X7  | O×N  | 90    |
+| X8  | I×S  | 4     |
+| X9  | I×N  | 6     |
+| X10 | S×N  | 6     |
 
 #### Section 5: Multi-Cue Stacks (C1–C10)
 Deliberately aligned and contradictory cue combinations.
@@ -167,12 +167,12 @@ Deliberately aligned and contradictory cue combinations.
 #### Section 6: Order-Effect Experiment
 Tests whether the position of cues in the prompt affects skin tone. Uses 6 occupations (2 per prestige band) across 4 alternative orderings compared against the default G→O→I→S→N order. 576 prompts total.
 
-| ID | Ordering |
-|----|----------|
-| Ord-IE | I→S→N→G→O (socioeconomic first) |
-| Ord-GE | S→N→I→G→O (geography first) |
+| ID     | Ordering                             |
+| ------ | ------------------------------------ |
+| Ord-IE | I→S→N→G→O (socioeconomic first)      |
+| Ord-GE | S→N→I→G→O (geography first)          |
 | Ord-OG | O→I→G→S→N (occupation before gender) |
-| Ord-RV | N→S→I→O→G (full reverse) |
+| Ord-RV | N→S→I→O→G (full reverse)             |
 
 ---
 
@@ -180,13 +180,13 @@ Tests whether the position of cues in the prompt affects skin tone. Uses 6 occup
 
 The project runs as a five-stage pipeline, orchestrated by `index.js`:
 
-| Stage | Script | Output |
-|-------|--------|--------|
-| 1 | `01_generate_prompts.js` | `prompts_5cue_matrix.csv` — prompt matrix |
-| 2 | `02_build_generation_jobs.js` | `generation_jobs.json` — structured job list |
-| 3 | `03_gpt_run_generation.js` / `03_grok_run_generation.js` | PNG images + generation manifests |
-| 4 | `04_audit.js` | `mst_audit_*.csv` — MST skin tone scores per image |
-| 5 | `05_run_full_analysis.py` | 45 statistical analyses + figures |
+| Stage | Script                                                   | Output                                             |
+| ----- | -------------------------------------------------------- | -------------------------------------------------- |
+| 1     | `01_generate_prompts.js`                                 | `prompts_5cue_matrix.csv` — prompt matrix          |
+| 2     | `02_build_generation_jobs.js`                            | `generation_jobs.json` — structured job list       |
+| 3     | `03_gpt_run_generation.js` / `03_grok_run_generation.js` | PNG images + generation manifests                  |
+| 4     | `04_audit.js`                                            | `mst_audit_*.csv` — MST skin tone scores per image |
+| 5     | `05_run_full_analysis.py`                                | 45 statistical analyses + figures                  |
 
 In `--test` mode, `index.js` truncates `generation_jobs.json` to the first 10 prompts, runs the full pipeline, then restores the original file automatically. In `--prod` mode it runs everything end-to-end.
 
@@ -234,86 +234,86 @@ A comprehensive Python analysis script running **45 statistical analyses** acros
 
 ### Base Analyses (1–12)
 
-| # | Title | Method |
-|---|-------|--------|
-| 1 | Descriptive Overview | Counts, means, medians, per-section stats |
-| 2 | Incremental Layer Analysis | Mean MST per L-track and N-track layer with bootstrap CIs |
-| 3 | Single-Cue Effects | Violin plots + Cohen's d vs baseline for each cue |
-| 4 | Income Effect | Mann-Whitney U, Cohen's d, income effect by layer |
-| 5 | Occupation Analysis | Prestige band means, ANOVA, η², ranked bar chart |
-| 6 | Gender Effect | Man vs woman vs neutral, Cohen's d |
-| 7 | Setting & Neighborhood | Village vs city, neighborhood comparisons, Cohen's d |
-| 8 | Two-Cue Interactions | Interaction = Observed − (SingleA + SingleB − Baseline) |
-| 9 | Multi-Cue Stacks | Aligned vs contradiction configs against baseline |
-| 10 | Order Effect | ANOVA across 4 orderings + baseline |
-| 11 | Income × Prestige Heatmap | 2×3 heatmap of mean MST |
-| 12 | Effect Size Summary | Ranked Cohen's d across all cue comparisons |
+| #   | Title                      | Method                                                    |
+| --- | -------------------------- | --------------------------------------------------------- |
+| 1   | Descriptive Overview       | Counts, means, medians, per-section stats                 |
+| 2   | Incremental Layer Analysis | Mean MST per L-track and N-track layer with bootstrap CIs |
+| 3   | Single-Cue Effects         | Violin plots + Cohen's d vs baseline for each cue         |
+| 4   | Income Effect              | Mann-Whitney U, Cohen's d, income effect by layer         |
+| 5   | Occupation Analysis        | Prestige band means, ANOVA, η², ranked bar chart          |
+| 6   | Gender Effect              | Man vs woman vs neutral, Cohen's d                        |
+| 7   | Setting & Neighborhood     | Village vs city, neighborhood comparisons, Cohen's d      |
+| 8   | Two-Cue Interactions       | Interaction = Observed − (SingleA + SingleB − Baseline)   |
+| 9   | Multi-Cue Stacks           | Aligned vs contradiction configs against baseline         |
+| 10  | Order Effect               | ANOVA across 4 orderings + baseline                       |
+| 11  | Income × Prestige Heatmap  | 2×3 heatmap of mean MST                                   |
+| 12  | Effect Size Summary        | Ranked Cohen's d across all cue comparisons               |
 
 ### Extended Analyses (E1–E10)
 
-| # | Title | Focus |
-|---|-------|-------|
-| E1 | L-track vs N-track | Does explicit gender moderate the other cues? |
-| E2 | X5: Occupation × Income | Income amplification per occupation |
-| E3 | X8: Income × Setting | Compounding of income and geography |
-| E4 | X9: Income × Neighborhood | Compounding of income and neighborhood |
-| E5 | X10: Setting × Neighborhood | Which geographic cue dominates? |
-| E6 | C5 vs C6 | Does occupation or context win in contradictions? |
-| E7 | X2: Gender × Occupation | Gender gap per occupation (stereotypes) |
-| E8 | X6/X7: Occupation × Geography | Prestige band effects across settings/neighborhoods |
-| E9 | Per-Occupation Effect | Forest plot with 95% bootstrap CIs per occupation |
-| E10 | C9/C10 Gradient Surfaces | 3-way interaction heatmaps |
+| #   | Title                         | Focus                                               |
+| --- | ----------------------------- | --------------------------------------------------- |
+| E1  | L-track vs N-track            | Does explicit gender moderate the other cues?       |
+| E2  | X5: Occupation × Income       | Income amplification per occupation                 |
+| E3  | X8: Income × Setting          | Compounding of income and geography                 |
+| E4  | X9: Income × Neighborhood     | Compounding of income and neighborhood              |
+| E5  | X10: Setting × Neighborhood   | Which geographic cue dominates?                     |
+| E6  | C5 vs C6                      | Does occupation or context win in contradictions?   |
+| E7  | X2: Gender × Occupation       | Gender gap per occupation (stereotypes)             |
+| E8  | X6/X7: Occupation × Geography | Prestige band effects across settings/neighborhoods |
+| E9  | Per-Occupation Effect         | Forest plot with 95% bootstrap CIs per occupation   |
+| E10 | C9/C10 Gradient Surfaces      | 3-way interaction heatmaps                          |
 
 ### Distribution Analyses (D1–D12)
 
-| # | Title | Method |
-|---|-------|--------|
-| D1 | Overall Shape | Skewness, kurtosis, mode, concentration |
-| D2 | Income Distribution | Overlaid histograms + KS test |
-| D3 | Prestige Distribution | 3-way overlay |
-| D4 | Neighborhood Distribution | 3-panel comparison |
-| D5 | Setting Distribution | Side-by-side bars |
-| D6 | Gender Distribution | 3-way comparison (man/woman/neutral) |
-| D7 | Layer Distributions | Heatmap of % at each MST across layers |
-| D8 | Occupation Extremes | Top 5 lightest vs top 5 darkest |
-| D9 | Income × Prestige Grid | 2×3 histogram grid |
-| D10 | CDFs | Cumulative distribution functions + KS stats |
-| D11 | Entropy | Information gain per cue (bits) |
-| D12 | Occupation Heatmap | 30×10 distribution heatmap |
+| #   | Title                     | Method                                       |
+| --- | ------------------------- | -------------------------------------------- |
+| D1  | Overall Shape             | Skewness, kurtosis, mode, concentration      |
+| D2  | Income Distribution       | Overlaid histograms + KS test                |
+| D3  | Prestige Distribution     | 3-way overlay                                |
+| D4  | Neighborhood Distribution | 3-panel comparison                           |
+| D5  | Setting Distribution      | Side-by-side bars                            |
+| D6  | Gender Distribution       | 3-way comparison (man/woman/neutral)         |
+| D7  | Layer Distributions       | Heatmap of % at each MST across layers       |
+| D8  | Occupation Extremes       | Top 5 lightest vs top 5 darkest              |
+| D9  | Income × Prestige Grid    | 2×3 histogram grid                           |
+| D10 | CDFs                      | Cumulative distribution functions + KS stats |
+| D11 | Entropy                   | Information gain per cue (bits)              |
+| D12 | Occupation Heatmap        | 30×10 distribution heatmap                   |
 
 ### Advanced Analyses (A1–A11)
 
-| # | Title | Method |
-|---|-------|--------|
-| A1 | OLS Regression | MST ~ gender + prestige + income + setting + neighborhood |
-| A2 | Interaction Regression | Adds 4 interaction terms |
-| A3 | Asymmetry | Darkening vs lightening magnitude per cue |
-| A4 | Tail Probabilities | P(MST≥7) and P(MST≤4) per condition |
-| A5 | Cliff's Delta | Non-parametric effect sizes |
-| A6 | Variance Analysis | SD per condition (model certainty) |
-| A7 | Effect Decomposition | Waterfall chart of sequential cue contributions |
-| A8 | Marginal vs Conditional | Does context change a cue's effect? |
-| A9 | Disparate Impact | 4/5 rule fairness check |
-| A10 | 3-Way Interaction | Gender × Income × Prestige |
-| A11 | Chi-Squared | Cramér's V for cue–MST association strength |
+| #   | Title                   | Method                                                    |
+| --- | ----------------------- | --------------------------------------------------------- |
+| A1  | OLS Regression          | MST ~ gender + prestige + income + setting + neighborhood |
+| A2  | Interaction Regression  | Adds 4 interaction terms                                  |
+| A3  | Asymmetry               | Darkening vs lightening magnitude per cue                 |
+| A4  | Tail Probabilities      | P(MST≥7) and P(MST≤4) per condition                       |
+| A5  | Cliff's Delta           | Non-parametric effect sizes                               |
+| A6  | Variance Analysis       | SD per condition (model certainty)                        |
+| A7  | Effect Decomposition    | Waterfall chart of sequential cue contributions           |
+| A8  | Marginal vs Conditional | Does context change a cue's effect?                       |
+| A9  | Disparate Impact        | 4/5 rule fairness check                                   |
+| A10 | 3-Way Interaction       | Gender × Income × Prestige                                |
+| A11 | Chi-Squared             | Cramér's V for cue–MST association strength               |
 
 ---
 
 ## Data Files
 
-| File | Rows | Description |
-|------|------|-------------|
-| `prompts_5cue_matrix.csv` | 2,659 | Full prompt matrix with all cue values and assembled prompts |
-| `gpt-image-1-mini.csv` | 2,660 | Generation manifest for OpenAI (filenames, URLs, timestamps, success/error) |
-| `grok-imagine-image.csv` | 2,660 | Generation manifest for xAI |
-| `mst_audit_gpt-image-1-mini.csv` | 2,659 | MST scores for GPT-generated images (audited by GPT-5-mini) |
-| `mst_audit_grok-imagine-image.csv` | 2,659 | MST scores for Grok-generated images (audited by GPT-5-mini) |
+| File                               | Rows  | Description                                                                 |
+| ---------------------------------- | ----- | --------------------------------------------------------------------------- |
+| `prompts_5cue_matrix.csv`          | 2,659 | Full prompt matrix with all cue values and assembled prompts                |
+| `gpt-image-1-mini.csv`             | 2,660 | Generation manifest for OpenAI (filenames, URLs, timestamps, success/error) |
+| `grok-imagine-image.csv`           | 2,660 | Generation manifest for xAI                                                 |
+| `mst_audit_gpt-image-1-mini.csv`   | 2,659 | MST scores for GPT-generated images (audited by GPT-5-mini)                 |
+| `mst_audit_grok-imagine-image.csv` | 2,659 | MST scores for Grok-generated images (audited by GPT-5-mini)                |
 
 ## Analysis Reports
 
-| File | Description |
-|------|-------------|
-| `gpt_audit_analysis.md` | Full 45-analysis write-up for GPT Image 1 Mini (2,658 images) |
+| File                     | Description                                                     |
+| ------------------------ | --------------------------------------------------------------- |
+| `gpt_audit_analysis.md`  | Full 45-analysis write-up for GPT Image 1 Mini (2,658 images)   |
 | `grok_audit_analysis.md` | Full 45-analysis write-up for Grok Imagine Image (2,660 images) |
 
 Both reports follow the same four-part structure (Base 1–12, Extended E1–E10, Distribution D1–D12, Advanced A1–A11) and include interpretive commentary for every analysis.
@@ -326,13 +326,13 @@ Both reports follow the same four-part structure (Base 1–12, Extended E1–E10
 
 Both models show strong socioeconomic colorism, but the cue ranking differs:
 
-| Cue | GPT (Cohen's d) | Grok (Cohen's d) |
-|-----|-----------------|-------------------|
-| Income | **1.20** (largest) | 0.76 |
-| Setting | 0.71 | 0.47 |
-| Neighborhood | 0.61 | **1.16** (largest) |
-| Occupation prestige | 0.55 | 0.80 |
-| Gender | 0.19 (small) | 0.08 (negligible) |
+| Cue                 | GPT (Cohen's d)    | Grok (Cohen's d)   |
+| ------------------- | ------------------ | ------------------ |
+| Income              | **1.20** (largest) | 0.76               |
+| Setting             | 0.71               | 0.47               |
+| Neighborhood        | 0.61               | **1.16** (largest) |
+| Occupation prestige | 0.55               | 0.80               |
+| Gender              | 0.19 (small)       | 0.08 (negligible)  |
 
 GPT is most sensitive to income; Grok is most sensitive to neighborhood. Both agree that gender is the weakest cue by far.
 
